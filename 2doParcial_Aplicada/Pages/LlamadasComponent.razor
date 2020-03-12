@@ -1,0 +1,248 @@
+﻿@page "/LlamadasComponent/{Id:int}"
+
+@using _2doParcial_Aplicada.Controllers;
+@using _2doParcial_Aplicada.Database;
+@using _2doParcial_Aplicada.Models;
+
+
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .form-register{
+        width: 700px;
+        background: #090b58;
+        border-radius: 4px;
+        padding: 30px;
+        margin: auto;
+        margin-top: 100px;
+        font-family: 'Calibri';
+        color: white;
+    }
+
+    .h3{
+        color: white;
+    }
+
+</style>
+
+    <section class="form-register">
+        <h3>Llamadas Component</h3>
+        <EditForm Model="@llamadas" OnValidSubmit="Guardar">
+            <DataAnnotationsValidator/>
+            <label class="text-muted form-text">@Mensaje</label>
+
+            <div class="form-group">
+                <label for="id_number">LlamadaId</label>
+                <InputNumber id="id_number" class="form-control" @bind-Value="llamadas.LlamadaId"></InputNumber>
+                @*<ValidationMessage For="(() => llamadas.LlamadaId)"/>*@
+                <button type="button" class="btn btn-primary" @onclick="Buscar" >Buscar</button>
+            </div>            
+            
+            <div class="form-group">
+                <label for="descripcion_text">Descripción</label>
+                <InputText id="id_number" class="form-control" @bind-Value="llamadas.Descripcion"></InputText>
+                @*<ValidationMessage For="(() => llamadas.Descripcion)" />*@
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="problema_text">Problema</label>
+                    <InputText id="problema_text" class="form-control" @bind-Value="problemas"></InputText>
+
+                </div>
+                
+                <div class="col">
+                    <label for="solucion_text">Solucion</label>
+                    <InputText id="solucion_text" class="form-control" @bind-Value="soluciones"></InputText>
+                    <button type="button" class="btn btn-outline-info" @onclick="AgregarCaso">Agregar</button>
+
+                </div>
+            </div>
+
+            <div>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>LlamadaId</th>
+                            <th>Problema</th>
+                            <th>Solución</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        @foreach (var item in llamadas.Detalle)
+                        {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.LLamadaId</td>
+                            <td>@item.Problema</td>
+                            <td>@item.Solucion</td>
+                            <td><button class="btn btn-outline-danger" @onclick="(() => EliminarCaso(item))">Quitar</button></td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+            <ValidationSummary/>
+            <div>
+                <button type="button" class="btn btn-danger" @onclick="Nuevo" >Nuevo</button>
+                <button type="submit" class="btn btn-success" >Guardar</button>
+                <button type="button" class="btn btn-secondary" @onclick="Eliminar" >Eliminar</button>
+            </div>
+        </EditForm>
+    </section>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public string Mensaje { get; set; }
+
+    string problemas = string.Empty;
+    string soluciones = string.Empty;
+
+    LLamadas llamadas = new LLamadas();
+
+
+    public bool ExisteEnLaBaseDeDatos(int id)
+    {
+        Contexto db = new Contexto();
+        var buscado = db.Llamadas.Find(id);
+        bool paso = true;
+
+        if(buscado == null)
+        {
+            paso = false;
+        }
+
+        return paso;
+    }
+    
+    protected override void OnInitialized()
+    {
+        LlamadasController controller = new LlamadasController();
+        Nuevo();
+        Mensaje = string.Empty;
+        if(Id != 0)
+        {
+            llamadas = controller.Buscar(Id);
+        }  
+    }
+
+
+    public void AgregarCaso()
+    {
+        llamadas.Detalle.Add(new LLamadasDetalle()
+        {
+            Id = 0,
+            LLamadaId =  llamadas.LlamadaId,
+            Problema = problemas,
+            Solucion = soluciones
+
+        });
+    }
+
+    public void EliminarCaso(LLamadasDetalle detalle)
+    {
+        try
+        {
+            llamadas.Detalle.Remove(detalle);
+        }
+        catch (Exception)
+        {
+
+            //
+        }
+    }
+
+    public void Guardar()
+    {
+        LlamadasController controller = new LlamadasController();
+
+        if(llamadas.LlamadaId > 0)
+        {
+            if (ExisteEnLaBaseDeDatos(llamadas.LlamadaId))
+            {
+                if (controller.Guardar(llamadas))
+                {
+                    Mensaje = "Se modifico correctamente";
+                    Nuevo();
+                }
+                else
+                {
+                    Mensaje = "No se pudo modificar";
+                }
+
+            }
+            else
+            {
+                Mensaje = "No se puede modificar un Caso que no exista";
+            }
+        }
+        else
+        {
+            if (controller.Guardar(llamadas))
+            {
+                Mensaje = "Se guardo correctamente";
+                Nuevo();
+            }
+            else
+            {
+                Mensaje = "No se pudo Guardar";
+            }
+        }
+
+    }
+
+    public void Eliminar()
+    {
+        LlamadasController controller = new LlamadasController();
+        int id = llamadas.LlamadaId;
+        if(id > 0)
+        {
+            if (ExisteEnLaBaseDeDatos(id))
+            {
+                controller.Eliminar(id);
+                Nuevo();
+                Mensaje = "Se elimino Correctamente";
+            }
+            else
+            {
+                Mensaje = "No se puede eliminar un Caso que no Exista";
+            }
+        }
+        else
+        {
+            Mensaje = "No se puede eliminar asi";
+        }
+    }
+
+    public void Buscar()
+    {
+        LlamadasController controller = new LlamadasController();
+        var llamada = controller.Buscar(llamadas.LlamadaId);
+
+        if (llamada != null)
+        {
+            llamadas = llamada;
+            Mensaje = "Se encontro el Caso";
+        }
+        else
+        {
+            Mensaje = "No existe este Caso";
+        }
+    }
+
+    public void Nuevo()
+    {
+        this.llamadas = new LLamadas();
+        problemas = string.Empty;
+        soluciones = string.Empty;
+    }
+}

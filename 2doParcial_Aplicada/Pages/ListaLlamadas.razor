@@ -1,0 +1,48 @@
+﻿@page "/ListaLlamadas";
+
+@using _2doParcial_Aplicada.Controllers;
+@using _2doParcial_Aplicada.Database;
+@using _2doParcial_Aplicada.Models;
+
+<h3>ListaLlamadas</h3>
+
+
+@if (lista == null)
+{
+    <a> No hay elementos agregados</a>
+}
+else
+{
+    <div>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>LlamadaId</th>
+                    <th>Descripcion</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in lista)
+                {
+                    <tr>
+                        <td>@item.LlamadaId</td>
+                        <td>@item.Descripcion</td>
+                        <td><a class="btn btn-outline-info" href="LlamadasComponent/@item.LlamadaId">Ver</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {        
+
+    List<LLamadas> lista = new List<LLamadas>();
+    LlamadasController controller = new LlamadasController();
+
+    protected override void OnInitialized()
+    {
+        lista = controller.GetList(A => true);
+    }
+}
