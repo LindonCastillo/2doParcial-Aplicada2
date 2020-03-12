@@ -2,7 +2,7 @@
 
 namespace _2doParcial_Aplicada.Migrations
 {
-    public partial class updatedatabase : Migration
+    public partial class dfr : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,10 +25,9 @@ namespace _2doParcial_Aplicada.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    LLamadaId = table.Column<int>(nullable: false),
+                    LlamadaId = table.Column<int>(nullable: false),
                     Problema = table.Column<string>(nullable: true),
-                    Solucion = table.Column<string>(nullable: true),
-                    LlamadaId = table.Column<int>(nullable: true)
+                    Solucion = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -38,7 +37,7 @@ namespace _2doParcial_Aplicada.Migrations
                         column: x => x.LlamadaId,
                         principalTable: "Llamadas",
                         principalColumn: "LlamadaId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

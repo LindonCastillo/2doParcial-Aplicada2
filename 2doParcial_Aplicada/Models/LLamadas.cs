@@ -10,8 +10,6 @@ namespace _2doParcial_Aplicada.Models
     public class LLamadas
     {
         [Key]
-        [Required(ErrorMessage ="No se puede dejar este campo vacío")]
-        [Range(minimum:0, maximum:2000000000,ErrorMessage = "El LlamadaId No puede ser menor que 0")]
         public int LlamadaId { get; set; }
         [Required(ErrorMessage = "No se puede dejar el campo Descripción vacío")]
         [StringLength(maximumLength:100,ErrorMessage ="La Descripción es muy larga")]

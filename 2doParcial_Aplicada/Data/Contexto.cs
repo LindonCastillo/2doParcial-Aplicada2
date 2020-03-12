@@ -5,14 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace _2doParcial_Aplicada.Database
+namespace _2doParcial_Aplicada.Data
 {
     public class Contexto : DbContext
     {
-        public DbSet<LLamadas> Llamadas  { get; set; }
+        public DbSet<LLamadas> Llamadas { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Data Source = Database/Aplicada2doParcial");
+            optionsBuilder.UseSqlite(@"Data Source = Database/ParcialAplicada2.db");
         }
     }
 }

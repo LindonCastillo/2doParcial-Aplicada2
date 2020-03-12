@@ -1,7 +1,7 @@
 ﻿@page "/LlamadasComponent/{Id:int}"
 
 @using _2doParcial_Aplicada.Controllers;
-@using _2doParcial_Aplicada.Database;
+@using _2doParcial_Aplicada.Data;
 @using _2doParcial_Aplicada.Models;
 
 
@@ -79,7 +79,7 @@
                         {
                         <tr>
                             <td>@item.Id</td>
-                            <td>@item.LLamadaId</td>
+                            <td>@item.LlamadaId</td>
                             <td>@item.Problema</td>
                             <td>@item.Solucion</td>
                             <td><button class="btn btn-outline-danger" @onclick="(() => EliminarCaso(item))">Quitar</button></td>
@@ -123,7 +123,7 @@
 
         return paso;
     }
-    
+
     protected override void OnInitialized()
     {
         LlamadasController controller = new LlamadasController();
@@ -132,7 +132,7 @@
         if(Id != 0)
         {
             llamadas = controller.Buscar(Id);
-        }  
+        }
     }
 
 
@@ -141,7 +141,7 @@
         llamadas.Detalle.Add(new LLamadasDetalle()
         {
             Id = 0,
-            LLamadaId =  llamadas.LlamadaId,
+            LlamadaId =  llamadas.LlamadaId,
             Problema = problemas,
             Solucion = soluciones
 
@@ -164,6 +164,13 @@
     public void Guardar()
     {
         LlamadasController controller = new LlamadasController();
+
+        if(llamadas.Detalle == null)
+        {
+            Mensaje = "Debe Agregar algun elemneto al detalle";
+            return;
+        }
+
 
         if(llamadas.LlamadaId > 0)
         {

@@ -1,4 +1,4 @@
-﻿using _2doParcial_Aplicada.Database;
+﻿using _2doParcial_Aplicada.Data;
 using _2doParcial_Aplicada.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
